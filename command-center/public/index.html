@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command Center</title>
+  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="logo">⌘ CENTER</div>
+        <div class="topbar-date" id="topbarDate"></div>
+      </div>
+      <div class="topbar-right">
+        <div class="integrations-status" id="integrationsDots"></div>
+        <button class="btn-icon" id="refreshAllBtn" title="Refresh all">↻</button>
+      </div>
+    </header>
+
+    <div class="connect-banner" id="connectBanner" style="display:none">
+      <div class="connect-banner-inner">
+        <h2>Connect your services</h2>
+        <p>OAuth only — your passwords never touch this server.</p>
+        <div class="connect-grid" id="connectGrid"></div>
+      </div>
+    </div>
+
+    <main class="main-grid" id="mainGrid">
+      <div class="col-left">
+        <section class="card" id="agendaCard">
+          <div class="card-header">
+            <span class="card-label cyan">Today's agenda</span>
+            <div class="task-progress-wrap">
+              <div class="task-progress-bar"><div class="task-progress-fill" id="taskProgressFill"></div></div>
+              <span class="task-progress-pct" id="taskProgressPct">0%</span>
+            </div>
+          </div>
+          <div class="task-input-row">
+            <input type="text" id="taskInput" placeholder="Add a task…" class="task-input" />
+            <button class="btn-add" id="taskAddBtn">+</button>
+          </div>
+          <ul class="task-list" id="taskList"></ul>
+        </section>
+
+        <section class="card" id="calendarCard">
+          <div class="card-header">
+            <span class="card-label purple">Calendar · next 7 days</span>
+            <button class="btn-refresh" onclick="refreshProvider('google')">↻</button>
+          </div>
+          <div class="events-list" id="eventsList"><div class="empty-state">Connect Google to see events</div></div>
+        </section>
+
+        <section class="card duo-card" id="duoCard">
+          <div class="card-header"><span class="card-label yellow">Duolingo</span></div>
+          <div class="duo-body" id="duoBody"><div class="empty-state">Set DUOLINGO_USERNAME in .env</div></div>
+        </section>
+      </div>
+
+      <div class="col-center">
+        <section class="card spotify-card" id="spotifyCard">
+          <div class="card-header">
+            <span class="card-label green">Spotify</span>
+            <button class="btn-refresh" onclick="refreshProvider('spotify')">↻</button>
+          </div>
+          <div class="spotify-body" id="spotifyBody">
+            <div class="empty-state">Connect Spotify to see what's playing</div>
+          </div>
+        </section>
+
+        <section class="card email-card" id="emailCard">
+          <div class="card-header">
+            <span class="card-label cyan">Gmail</span>
+            <div class="email-actions">
+              <button class="btn-refresh" onclick="refreshProvider('google')">↻</button>
+              <button class="btn-danger" id="purgeBtn" onclick="purgeMarketing()">Purge marketing</button>
+            </div>
+          </div>
+          <div class="email-tabs">
+            <button class="tab active" onclick="filterEmails('all',this)">All</button>
+            <button class="tab" onclick="filterEmails('important',this)">Important</button>
+            <button class="tab" onclick="filterEmails('marketing',this)">Marketing</button>
+            <button class="tab" onclick="filterEmails('social',this)">Social</button>
+          </div>
+          <div class="email-list" id="emailList"><div class="empty-state">Connect Google to see emails</div></div>
+        </section>
+      </div>
+
+      <div class="col-right">
+        <section class="card" id="githubCard">
+          <div class="card-header">
+            <span class="card-label white">GitHub</span>
+            <button class="btn-refresh" onclick="refreshProvider('github')">↻</button>
+          </div>
+          <div class="github-tabs">
+            <button class="tab active" onclick="filterGithub('notification',this)">Notifs</button>
+            <button class="tab" onclick="filterGithub('pr',this)">PRs</button>
+            <button class="tab" onclick="filterGithub('repo',this)">Repos</button>
+          </div>
+          <div class="github-list" id="githubList"><div class="empty-state">Connect GitHub</div></div>
+        </section>
+
+        <section class="card" id="discordCard">
+          <div class="card-header">
+            <span class="card-label indigo">Discord</span>
+            <button class="btn-refresh" onclick="refreshProvider('discord')">↻</button>
+          </div>
+          <div class="discord-list" id="discordList"><div class="empty-state">Connect Discord &amp; add bot to your server</div></div>
+        </section>
+
+        <section class="card" id="redditCard">
+          <div class="card-header">
+            <span class="card-label orange">Reddit</span>
+            <button class="btn-refresh" onclick="refreshProvider('reddit')">↻</button>
+          </div>
+          <div class="reddit-tabs">
+            <button class="tab active" onclick="filterReddit('post',this)">Feed</button>
+            <button class="tab" onclick="filterReddit('message',this)">Messages</button>
+          </div>
+          <div class="reddit-list" id="redditList"><div class="empty-state">Connect Reddit</div></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="/js/app.js"></script>
+</body>
+</html>
